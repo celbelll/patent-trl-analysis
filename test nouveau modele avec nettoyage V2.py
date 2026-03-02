@@ -193,4 +193,4 @@ for i, trl_class in enumerate(classes):
 plt.tight_layout()
 plt.savefig("top_features_par_trl.png", dpi=300, bbox_inches="tight")
 plt.show()
-print("✓ top_features_par_trl.png généré")[Errno 13] Permission denied: 'mon_nouveau_corpus_avec_trl_avec_nettoyage.csv'
+print("✓ top_features_par_trl.png généré")
