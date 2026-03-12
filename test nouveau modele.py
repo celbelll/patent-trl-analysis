@@ -1,3 +1,10 @@
+# ==============================
+# Ce code permet d'évaluer les niveaux TRL d'un corpus de brevets du modèle frugal_trl_model.pkl, après un nettoyage très succint du texte : suppression des caractères spéciaux, des chiffres.
+# Il génère un fichier .csv qui reprend le fichier d'entrée avec deux colonnes supplémentaires : le texte (titre, abstract, claims) concaténé et l'évaluation du trl.
+# et affiche deux diagramme en sortie, un diagramme batons et un diagramme circulaire, pour visualiser la répartition des niveaux TRL.
+# ==============================
+
+
 import pandas as pd
 import joblib
  

@@ -1,3 +1,10 @@
+# ==============================
+# Ce code permet d'évaluer les niveaux TRL d'un corpus de brevets du modèle frugal_trl_model.pkl, après un nettoyage préalable du texte : suppression des accents, conversion en minuscules, séparation des lettres et chiffres, suppression des caractères non alphanumériques, normalisation des espaces et suppression des stopwords.
+# Il génère un fichier .csv qui reprend le fichier d'entrée avec trois colonnes supplémentaires : le texte (titre, abstract, claims) concaténé, le texte concaténé et nettoyé, et l'évaluation du trl.
+# et affiche deux diagramme en sortie, un diagramme batons et un diagramme circulaire, pour visualiser la répartition des niveaux TRL.
+# ==============================
+
+
 import pandas as pd
 import joblib
 import re
@@ -22,8 +29,7 @@ PATENT_STOPWORDS = {
     "portion", "part", "another", "example",
     "configured", "arranged", "adapted", "respective",
     "thereon", "thereupon", "therewith",
-    "generally", "optionally", "typically", "preferably",
-    "alternatively", "otherwise", "type", "base", "based",
+    "otherwise", "type", "base", "based",
     "including", "includes", "included",
     "provide", "provided", "providing",
     "comprise", "comprising", "comprises",
