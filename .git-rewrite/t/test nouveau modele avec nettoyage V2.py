@@ -1,10 +1,3 @@
-# ==============================
-# Ce code permet d'évaluer les niveaux TRL d'un corpus de brevets du modèle frugal_trl_model.pkl, après un nettoyage préalable du texte : suppression des accents, conversion en minuscules, séparation des lettres et chiffres, suppression des caractères non alphanumériques, normalisation des espaces et suppression des stopwords.
-# Il génère 2 fichiers .csv : l'un qui reprend le fichier d'entrée avec trois colonnes supplémentaires : le texte (titre, abstract, claims) concaténé, le texte concaténé et nettoyé, et l'évaluation du trl; et l'autre qui répertorie les top mots par TRL (avec leur rang et leur poids dans le modèle).
-# Et il affiche 3 diagrammes en sortie, un diagramme batons et un diagramme circulaire, pour visualiser la répartition des niveaux TRL, ainsi qu'un diagramme en barres horizontales pour visualiser les top mots par TRL.
-# ==============================
-
-
 import pandas as pd
 import joblib
 import re
@@ -31,7 +24,8 @@ PATENT_STOPWORDS = {
     "portion", "part", "another", "example",
     "configured", "arranged", "adapted", "respective",
     "thereon", "thereupon", "therewith",
-    "otherwise", "type", "base", "based",
+    "generally", "optionally", "typically", "preferably",
+    "alternatively", "otherwise", "type", "base", "based",
     "including", "includes", "included",
     "provide", "provided", "providing",
     "comprise", "comprising", "comprises",
@@ -181,65 +175,22 @@ print("✓ top_features_par_trl.csv généré")
 # 📊 Graphique : top features par TRL
 # ==============================
 
-import tkinter as tk
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import matplotlib.pyplot as plt
-
 n_classes = len(classes)
-ROW_HEIGHT = 0.45
-PADDING = 2.5
-height_per_subplot = TOP_N * ROW_HEIGHT + PADDING
-total_height = height_per_subplot * n_classes
+fig, axes = plt.subplots(n_classes, 1, figsize=(12, 5 * n_classes))
 
-fig, axes = plt.subplots(n_classes, 1, figsize=(9, total_height))
 if n_classes == 1:
     axes = [axes]
 
 for i, trl_class in enumerate(classes):
     df_trl = df_features[df_features["trl"] == trl_class].sort_values("weight", ascending=True)
-    axes[i].barh(df_trl["word"], df_trl["weight"], color="steelblue", edgecolor="black", height=0.6)
-    axes[i].set_title(f"Top {TOP_N} mots — TRL {trl_class}", fontsize=12, fontweight="bold", pad=8)
+    
+    axes[i].barh(df_trl["word"], df_trl["weight"], color="steelblue", edgecolor="black")
+    axes[i].set_title(f"Top {TOP_N} mots — TRL {trl_class}", fontsize=13, fontweight="bold")
     axes[i].set_xlabel("Coefficient SVM", fontsize=10)
-    axes[i].tick_params(axis='y', labelsize=10)
     axes[i].axvline(x=0, color="red", linestyle="--", linewidth=0.8)
     axes[i].grid(axis="x", alpha=0.3)
 
-fig.tight_layout(pad=3.0)
-fig.savefig("top_features_par_trl.png", dpi=150, bbox_inches="tight")
-print("✓ top_features_par_trl.png généré")
-plt.close('all')  # ferme l'event loop matplotlib avant d'ouvrir tkinter
-
-# --- Fenêtre Tkinter scrollable ---
-root = tk.Tk()
-root.title("Top features par TRL — utilisez la molette pour défiler")
-root.geometry("1100x800")
-
-frame = tk.Frame(root)
-frame.pack(fill=tk.BOTH, expand=True)
-
-canvas_tk = tk.Canvas(frame)
-scrollbar = tk.Scrollbar(frame, orient=tk.VERTICAL, command=canvas_tk.yview)
-canvas_tk.configure(yscrollcommand=scrollbar.set)
-
-scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-canvas_tk.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-
-inner_frame = tk.Frame(canvas_tk)
-canvas_tk.create_window((0, 0), window=inner_frame, anchor="nw")
-
-fig_canvas = FigureCanvasTkAgg(fig, master=inner_frame)
-fig_canvas.draw()
-fig_canvas.get_tk_widget().pack()
-
-def on_configure(event):
-    canvas_tk.configure(scrollregion=canvas_tk.bbox("all"))
-
-inner_frame.bind("<Configure>", on_configure)
-
-# Molette souris
-def on_mousewheel(event):
-    canvas_tk.yview_scroll(int(-1 * (event.delta / 120)), "units")
-
-root.bind_all("<MouseWheel>", on_mousewheel)
-
-root.mainloop()
+plt.tight_layout()
+plt.savefig("top_features_par_trl.png", dpi=300, bbox_inches="tight")
+plt.show()
+print("✓ top_features_par_trl.png généré")[Errno 13] Permission denied: 'mon_nouveau_corpus_avec_trl_avec_nettoyage.csv'

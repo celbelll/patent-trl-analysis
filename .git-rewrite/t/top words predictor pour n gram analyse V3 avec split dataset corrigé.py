@@ -165,21 +165,6 @@ def plot_prediction_drivers(model, X_data, y_preds, features, out_path,
 
 print("\n=== Chargement du corpus ===")
 
-# --- définitions longues des niveaux TRL ---
-trl_definitions = {
-            1: "basic principles observed fundamental research theoretical studies lowest maturity scientific discovery idea generation",
-            2: "technology concept formulated hypothesis speculative application potential use cases theoretical framework no validation",
-            3: "experimental proof of concept critical function validation feasibility study lab experiment analytical studies early prototype",
-            4: "technology validation in lab component testing prototype in controlled environment laboratory verification low-fidelity",
-            5: "technology validation in relevant environment high-fidelity prototype simulation industrial validation risk reduction",
-            6: "system demonstration in relevant environment pilot functional prototype near-operational performance testing",
-            7: "system demonstration in operational environment field testing real world conditions deployment pre-commercial",
-            8: "system complete and qualified certification standards production readiness commercial ready final system",
-            9: "system proven in operational environment market deployment full scale commercialized sales mission ready"
-}
-
-
-
 df = pd.read_csv(DATA_PATH)
 df['label'] = df['trl_pred'].apply(clean_trl)
 df['text'] = df['text_clean']
@@ -203,32 +188,6 @@ df_train, df_test = train_test_split(
     stratify=df['label']
 )
 
-# -------------------------------------------------------------------
-# Ajouter les définitions TRL comme données d'entraînement supplémentaires
-# -------------------------------------------------------------------
-
-# poids par défaut pour les brevets
-df_train['weight'] = 1.0
-
-definition_rows = []
-
-for trl, definition in trl_definitions.items():
-        definition_rows.append({
-            "text": definition,
-            "label": trl,
-            "weight": 1000.0
-        })
-
-df_defs = pd.DataFrame(definition_rows)
-
-print(f"Ajout de {len(df_defs)} définitions TRL dans l'entraînement")
-
-# On ajoute les définitions uniquement dans le TRAIN
-df_train = pd.concat(
-    [df_train[['text', 'label', 'weight']], df_defs],
-    ignore_index=True
-)
-
 print(f"Train : {len(df_train)} brevets (80%)")
 print(f"Test  : {len(df_test)} brevets (20%)")
 
@@ -237,14 +196,13 @@ print(f"Test  : {len(df_test)} brevets (20%)")
 # -------------------------------------------------------------------
 
 tfidf = TfidfVectorizer(
-    ngram_range=(1, 1),
+    ngram_range=(1, 3),
     max_features=50000,
     sublinear_tf=True
 )
 
 X_train = tfidf.fit_transform(df_train['text'])
 y_train = df_train['label']
-train_weights = df_train['weight']
 
 X_test = tfidf.transform(df_test['text'])
 y_test = df_test['label'].astype(int).values
@@ -262,7 +220,7 @@ svm_model = LinearSVC(
     random_state=42
 )
 
-svm_model.fit(X_train, y_train, sample_weight=train_weights)
+svm_model.fit(X_train, y_train)
 print("✅ SVM entraîné sur 80% du corpus")
 
 # Accuracy sur les 20% de test
