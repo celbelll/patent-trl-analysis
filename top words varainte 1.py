@@ -1,3 +1,10 @@
+#=======================
+# Ce code permet d'extraire les mots et bigrammes les plus fréquents dans le corpus de textes concaténés (titres, abstracts et claims) des brevets.
+# Il utilise CountVectorizer pour vectoriser le texte et calcule la fréquence globale de chaque n-gramme.
+# Le résultat est sauvegardé dans un fichier CSV "top_words_frequency.csv" avec les colonnes "ngram" et "frequency".
+#=======================
+
+
 import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer

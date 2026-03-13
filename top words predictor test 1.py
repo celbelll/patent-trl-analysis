@@ -1,3 +1,9 @@
+#===========================================
+# Ce code permet d'entraîner un SVM sur un corpus de brevets avec des labels TRL, et d'extraire les n-grammes les plus importants pour chaque classe TRL.
+# Il génère un graphique "figure_feature_importance_single_corpus.png" montrant les top n-grammes pour chaque TRL, et un fichier CSV "results_topwords_single_corpus.csv" listant les n-grammes et leurs poids pour chaque TRL.
+#===========================================
+
+
 # ==========================================
 # topword_svm_single_corpus.py
 # - SVM sur corpus unique
